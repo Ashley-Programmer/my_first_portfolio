@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
   window.addEventListener("scroll", handleScroll, { passive: true });
-
+  
   // Back to Top Button
   const backToTop = document.getElementById("backToTop");
   function toggleBackToTop() {

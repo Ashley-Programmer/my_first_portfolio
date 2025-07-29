@@ -847,6 +847,11 @@ body.light-theme .theme-toggle .fa-moon::before {
   position: relative;
   margin: 2rem 0;
   width: 50%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.timeline-item:hover {
+  transform: scale(1.05);
 }
 
 .timeline-item:nth-child(odd) {
@@ -1897,7 +1902,7 @@ a:focus-visible {
   .timeline-section,
   .projects-section,
   .contact-cta {
-    background: white !important;
-    color: black !important;
+    background: white;
+    color: black;
   }
 }
