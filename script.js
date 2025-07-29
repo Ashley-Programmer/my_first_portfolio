@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     images.forEach((img) => observer.observe(img));
 
-    // Animation on scroll
+    // Animation on scroll for sections
     const animatedElements = document.querySelectorAll('.hero-section, .about-section, .contact-cta');
     const scrollObserver = new IntersectionObserver(
         (entries) => {
@@ -147,6 +147,34 @@ document.addEventListener('DOMContentLoaded', function () {
     );
 
     animatedElements.forEach((element) => scrollObserver.observe(element));
+
+    // Hero section specific animations
+    const heroElements = document.querySelectorAll('.hero-section h1, .hero-section h3, .hero-section p, .hero-section .d-flex, .profile-image-container');
+    const heroObserver = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('hero-animate');
+                }
+            });
+        },
+        { threshold: 0.3, rootMargin: '0px' }
+    );
+
+    heroElements.forEach((element) => heroObserver.observe(element));
+
+    // Parallax effect for profile image
+    const profileImage = document.querySelector('.profile-image-container');
+    window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+        profileImage.style.transform = `translateY(${scrollY * 0.1}px) scale(1.05)`;
+    });
+
+    // Optimize profile image loading
+    const profileImg = document.querySelector('.profile-image-container img');
+    if (profileImg) {
+        profileImg.setAttribute('loading', 'lazy');
+    }
 
     // Remove loading animation for external links
     document.querySelectorAll('a[target="_blank"]').forEach((link) => {
