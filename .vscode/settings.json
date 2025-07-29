@@ -1,3 +1,10 @@
 {
+<<<<<<< HEAD
+  "liveServer.settings.port": 5501,
+  "cSpell.words": [
+    "Motsie"
+  ]
+=======
   "liveServer.settings.port": 5501
+>>>>>>> cd9b9672cf15c2603fb7fc58786e55591d57b26d
 }

@@ -9,6 +9,28 @@ html, body {
   scroll-behavior: smooth;
 }
 
+:root {
+  --dark-bg: #0e1117;
+  --darker-bg: #090c11;
+  --card-bg: #151a24;
+  --text-primary: #ffffff;
+  --text-secondary: #adb5bd;
+  --text-muted: #6c757d;
+  --accent-color: #3b82f6;
+  --accent-hover: #1d4ed8;
+  --border-color: #2a2f39;
+  --nav-height: 80px;
+  --glass-bg: rgba(21, 26, 36, 0.95);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --section-padding: clamp(2.5rem, 6vw, 4rem) 0;
+  --border-radius: 0.75rem;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --light-bg: #f5f5f5;
+  --light-text: #1a1a1a;
+  --light-accent: #2563eb;
+}
+
 body {
   display: flex;
   flex-direction: column;
@@ -57,15 +79,15 @@ body.light-theme .social-title,
 body.light-theme .social-link,
 body.light-theme .copyright p,
 body.light-theme .footer-bottom-links a {
-  color: var(--light-text) !important;
+  color: var(--light-text);
 }
 
 body.light-theme .nav-link:hover {
-  color: var(--light-accent) !important;
+  color: var(--light-accent);
 }
 
 body.light-theme .nav-link.active {
-  color: var(--light-accent) !important;
+  color: var(--light-accent);
 }
 
 body.light-theme .btn-primary {
@@ -148,28 +170,6 @@ body.light-theme .lead {
   flex-shrink: 0;
 }
 
-:root {
-  --dark-bg: #0e1117;
-  --darker-bg: #090c11;
-  --card-bg: #151a24;
-  --text-primary: #ffffff;
-  --text-secondary: #adb5bd;
-  --text-muted: #6c757d;
-  --accent-color: #3b82f6;
-  --accent-hover: #1d4ed8;
-  --border-color: #2a2f39;
-  --nav-height: 80px;
-  --glass-bg: rgba(21, 26, 36, 0.95);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --section-padding: clamp(2.5rem, 6vw, 4rem) 0;
-  --border-radius: 0.75rem;
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  --light-bg: #f5f5f5;
-  --light-text: #1a1a1a;
-  --light-accent: #2563eb;
-}
-
 /* Updated navbar styles for better visibility */
 .navbar {
   position: fixed;
@@ -207,14 +207,14 @@ body.light-theme .lead {
   align-items: center;
   font-weight: 700;
   font-size: clamp(1.4rem, 3.5vw, 1.6rem);
-  color: var(--text-primary) !important;
+  color: var(--text-primary);
   text-decoration: none;
   letter-spacing: -0.5px;
   transition: var(--transition);
 }
 
 .navbar-brand:hover {
-  color: var(--accent-color) !important;
+  color: var(--accent-color);
   transform: scale(1.03);
 }
 
@@ -364,8 +364,8 @@ body.light-theme .navbar-collapse.show {
   padding: 12px 20px;
   font-size: clamp(1rem, 2.5vw, 1.1rem);
   touch-action: manipulation;
-  color: var(--text-primary) !important; /* Ensure high contrast */
-  font-weight: 600; /* Bolder for visibility */
+  color: var(--text-primary);
+  font-weight: 600;
   border-radius: 10px;
   transition: var(--transition);
   display: flex;
@@ -373,21 +373,21 @@ body.light-theme .navbar-collapse.show {
   gap: 8px;
   text-decoration: none;
   white-space: nowrap;
-  opacity: 1 !important; /* Force visibility */
+  opacity: 1;
 }
 
 .navbar-collapse.show .nav-link {
-  opacity: 1 !important; /* Ensure visibility when menu is open */
+  opacity: 1;
 }
 
 .nav-link i {
   font-size: 0.95rem;
-  color: var(--accent-color); /* Brighter icon color */
+  color: var(--accent-color);
   transition: 0.1s ease;
 }
 
 .nav-link:hover {
-  color: var(--accent-color) !important;
+  color: var(--accent-color);
   transform: translateY(-2px);
 }
 
@@ -397,7 +397,7 @@ body.light-theme .navbar-collapse.show {
 }
 
 .nav-link.active {
-  color: var(--accent-color) !important;
+  color: var(--accent-color);
   font-weight: 700;
 }
 
@@ -473,7 +473,7 @@ body.light-theme .navbar-collapse.show {
     text-align: center;
     border-radius: 12px;
     transition: background 0.3s ease, transform 0.3s ease;
-    color: var(--text-primary) !important;
+    color: var(--text-primary);
     font-weight: 600;
   }
 
@@ -717,26 +717,31 @@ body.light-theme .navbar-collapse.show {
 .social-link.linkedin:hover {
   background: #0077b5;
   border-color: #0077b5;
+  color: var(--text-primary);
 }
 
 .social-link.github:hover {
   background: #333;
   border-color: #333;
+  color: var(--text-primary);
 }
 
 .social-link.twitter:hover {
   background: #1da1f2;
   border-color: #1da1f2;
+  color: var(--text-primary);
 }
 
 .social-link.instagram:hover {
   background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
   border-color: #bc1888;
+  color: var(--text-primary);
 }
 
 .social-link.youtube:hover {
   background: #ff0000;
   border-color: #ff0000;
+  color: var(--text-primary);
 }
 
 .footer-bottom {
@@ -905,7 +910,7 @@ body {
 }
 
 .rounded-circle {
-  border-radius: 50% !important;
+  border-radius: 50%;
 }
 
 .ratio {
