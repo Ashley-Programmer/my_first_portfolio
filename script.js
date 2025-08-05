@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', function () {
             charIndex++;
             if (charIndex > currentWord.length) {
                 isDeleting = true;
-                setTimeout(type, 2000);
+                setTimeout(type, 200);
             } else {
                 setTimeout(type, 100);
             }
