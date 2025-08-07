@@ -583,13 +583,14 @@ body.light-theme .navbar-collapse.show {
 }
 
 .typing-text span::before {
-  content: "Full-stack Developer";
+  content: "";
   animation: words 16s infinite;
 }
 
 @keyframes words {
   0%, 100% {
-    content: "I'm a ";
+    content: "A passionate ";
+    color: var(--accent-color);
   }
 }
 .typing-text::before {
