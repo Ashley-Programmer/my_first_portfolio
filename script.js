@@ -1,15 +1,28 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Page loader
+    // Page loader with accessibility
     setTimeout(() => {
         document.body.classList.add('page-loaded');
-    }, 1000);
+        document.querySelector('.page-loader').setAttribute('aria-hidden', 'true');
+    }, 800); // Reduced for faster perceived load
+
+    // Throttle function to optimize scroll events
+    function throttle(fn, wait) {
+        let lastTime = 0;
+        return function (...args) {
+            const now = Date.now();
+            if (now - lastTime >= wait) {
+                lastTime = now;
+                fn.apply(this, args);
+            }
+        };
+    }
 
     // Navbar scroll effect
     const navbar = document.querySelector('.navbar');
     const backToTop = document.getElementById('backToTop');
     const navbarToggler = document.querySelector('.navbar-toggler');
 
-    window.addEventListener('scroll', function () {
+    window.addEventListener('scroll', throttle(() => {
         if (window.scrollY > 100) {
             navbar.classList.add('scrolled');
             backToTop.classList.add('show');
@@ -17,31 +30,35 @@ document.addEventListener('DOMContentLoaded', function () {
             navbar.classList.remove('scrolled');
             backToTop.classList.remove('show');
         }
-    });
+    }, 100));
 
     // Back to top functionality
-    backToTop.addEventListener('click', function () {
+    backToTop.addEventListener('click', () => {
         window.scrollTo({
             top: 0,
-            behavior: 'smooth',
+            behavior: 'smooth'
         });
     });
 
     // Smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
+            const targetId = this.getAttribute('href');
+            const target = document.querySelector(targetId);
             if (target) {
                 target.scrollIntoView({
                     behavior: 'smooth',
-                    block: 'start',
+                    block: 'start'
                 });
+                // Update ARIA attributes for accessibility
+                target.setAttribute('tabindex', '-1');
+                target.focus({ preventScroll: true });
             }
         });
     });
 
-    // Theme toggle
+    // Theme toggle with smooth transition
     const themeToggle = document.getElementById('theme-toggle');
     const themeIcon = themeToggle.querySelector('i');
     const currentTheme = localStorage.getItem('theme') || 'dark';
@@ -52,32 +69,33 @@ document.addEventListener('DOMContentLoaded', function () {
         themeToggle.setAttribute('aria-label', 'Switch to dark theme');
     }
 
-    themeToggle.addEventListener('click', function () {
+    themeToggle.addEventListener('click', () => {
+        document.body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
         document.body.classList.toggle('light-theme');
         const isLightTheme = document.body.classList.contains('light-theme');
         themeIcon.classList.toggle('fa-sun', !isLightTheme);
         themeIcon.classList.toggle('fa-moon', isLightTheme);
         themeToggle.setAttribute('aria-label', isLightTheme ? 'Switch to dark theme' : 'Switch to light theme');
         localStorage.setItem('theme', isLightTheme ? 'light' : 'dark');
+        // Remove transition after animation
+        setTimeout(() => {
+            document.body.style.transition = '';
+        }, 300);
     });
 
     // Enhanced mobile toggle accessibility
     navbarToggler.addEventListener('click', function () {
         const isExpanded = navbarToggler.getAttribute('aria-expanded') === 'true';
         navbarToggler.setAttribute('aria-label', isExpanded ? 'Open navigation menu' : 'Close navigation menu');
-
-        // Focus management: Move focus to first nav link when menu opens
         if (isExpanded) {
             const firstNavLink = document.querySelector('#navbarNav .nav-link');
-            if (firstNavLink) {
-                firstNavLink.focus();
-            }
+            if (firstNavLink) firstNavLink.focus();
         }
     });
 
     // Keyboard navigation for accessibility
-    document.querySelectorAll('.nav-link, .btn, .social-link').forEach((element) => {
-        element.addEventListener('keydown', (e) => {
+    document.querySelectorAll('.nav-link, .btn, .social-link').forEach(element => {
+        element.addEventListener('keydown', e => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
                 element.click();
@@ -87,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Trap focus within menu when open
     const navbarNav = document.querySelector('#navbarNav');
-    navbarNav.addEventListener('keydown', (e) => {
+    navbarNav.addEventListener('keydown', e => {
         if (navbarToggler.getAttribute('aria-expanded') === 'true') {
             const focusableElements = navbarNav.querySelectorAll('a.nav-link, button.nav-link');
             const firstElement = focusableElements[0];
@@ -109,117 +127,172 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Close menu when clicking outside
-    document.addEventListener('click', (e) => {
+    document.addEventListener('click', e => {
         if (navbarToggler.getAttribute('aria-expanded') === 'true' && !navbar.contains(e.target) && !navbarToggler.contains(e.target)) {
             navbarToggler.click();
         }
     });
 
-    // Lazy loading images
+    // Lazy loading images with error handling
     const images = document.querySelectorAll('img[data-src]');
-    const observer = new IntersectionObserver(
-        (entries, observer) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    img.src = img.dataset.src;
-                    img.removeAttribute('data-src');
-                    observer.unobserve(img);
-                }
-            });
-        },
-        { rootMargin: window.innerWidth < 768 ? '100px' : '200px' }
-    );
+    if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(
+            (entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src || img.src; // Fallback to src if data-src is missing
+                        img.removeAttribute('data-src');
+                        observer.unobserve(img);
+                    }
+                });
+            },
+            { rootMargin: window.innerWidth < 768 ? '100px' : '200px' }
+        );
+        images.forEach(img => observer.observe(img));
+    } else {
+        // Fallback for browsers without IntersectionObserver
+        images.forEach(img => {
+            img.src = img.dataset.src || img.src;
+            img.removeAttribute('data-src');
+        });
+    }
 
-    images.forEach((img) => observer.observe(img));
-
-    // Animation on scroll for sections
+    // Animation on scroll for sections with stagger
     const animatedElements = document.querySelectorAll('.hero-section, .about-section, .contact-cta');
-    const scrollObserver = new IntersectionObserver(
-        (entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate-in');
-                }
-            });
-        },
-        { threshold: 0.1 }
-    );
+    if ('IntersectionObserver' in window) {
+        const scrollObserver = new IntersectionObserver(
+            (entries, observer) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('animate-in');
+                        }, index * 100); // Staggered animation
+                        observer.unobserve(entry.target);
+                    }
+                });
+            },
+            { threshold: 0.1 }
+        );
+        animatedElements.forEach(element => scrollObserver.observe(element));
+    }
 
-    animatedElements.forEach((element) => scrollObserver.observe(element));
-
-    // Hero section specific animations
+    // Hero section staggered animations
     const heroElements = document.querySelectorAll('.hero-section h1, .hero-section h3, .hero-section p, .hero-section .d-flex, .profile-image-container');
-    const heroObserver = new IntersectionObserver(
-        (entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('hero-animate');
-                }
-            });
-        },
-        { threshold: 0.3, rootMargin: '0px' }
-    );
-    heroElements.forEach((element) => heroObserver.observe(element));
+    if ('IntersectionObserver' in window) {
+        const heroObserver = new IntersectionObserver(
+            (entries, observer) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('hero-animate');
+                        }, index * 150); // Staggered delay for hero elements
+                        observer.unobserve(entry.target);
+                    }
+                });
+            },
+            { threshold: 0.3 }
+        );
+        heroElements.forEach(element => heroObserver.observe(element));
+    }
 
-    // typing animation with accessibility
-    const typingText = document.querySelector('.typing-text');
-    const words = ['Software Developer', 'AI Developer', 'Fullstack Developer'];
+    // Enhanced typing animation
+    const typingText = document.querySelector('.typing-text .words-typing');
+    const words = ['Software Developer', 'AI Developer', 'Fullstack Developer', 'Web Designer'];
     let wordIndex = 0;
     let charIndex = 0;
     let currentWord = '';
     let isDeleting = false;
 
     function type() {
+        if (!typingText) return; // Early exit if element not found
         if (wordIndex >= words.length) wordIndex = 0;
         currentWord = words[wordIndex];
 
+        typingText.textContent = currentWord.substring(0, charIndex);
+        typingText.setAttribute('aria-label', `Current role: ${currentWord.substring(0, charIndex)}`);
+
         if (isDeleting) {
-            typingText.textContent = currentWord.substring(0, charIndex);
             charIndex--;
             if (charIndex < 0) {
                 isDeleting = false;
                 wordIndex++;
-                setTimeout(type, 500);
+                setTimeout(type, 800); // Longer pause before next word
             } else {
-                setTimeout(type, 100);
+                setTimeout(type, 80);
             }
-
         } else {
-            typingText.textContent = currentWord.substring(0, charIndex);
             charIndex++;
             if (charIndex > currentWord.length) {
                 isDeleting = true;
-                setTimeout(type, 200);
+                setTimeout(type, 1500); // Pause at full word
             } else {
-                setTimeout(type, 100);
+                setTimeout(type, 120); // Faster typing speed
             }
         }
-        // update aria-label for screen readers
-        typingText.setAttribute('aria-label', `Currently role: ${typingText.textContent}`);
     }
     type();
 
-    // Parallax effect for profile image
+    // Optimized parallax effect for profile image
     const profileImage = document.querySelector('.profile-image-container');
-    window.addEventListener('scroll', () => {
-        const scrollY = window.scrollY;
-        profileImage.style.transform = `translateY(${scrollY * 0.1}px) scale(1.05)`;
-    });
+    if (profileImage && window.innerWidth > 768) { // Disable on mobile for performance
+        window.addEventListener('scroll', throttle(() => {
+            const scrollY = window.scrollY;
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const parallaxFactor = Math.min(scrollY / maxScroll * 0.2, 0.1); // Limit parallax movement
+            profileImage.style.transform = `translateY(${scrollY * parallaxFactor}px)`;
+        }, 50));
+    }
+
+    // Profile image ripple effect
+    const profileImageContainer = document.querySelector('.profile-image-container');
+    if (profileImageContainer) {
+        profileImageContainer.setAttribute('tabindex', '0'); // Make focusable
+        profileImageContainer.addEventListener('click', function (e) {
+            const ripple = document.createElement('span');
+            ripple.classList.add('ripple');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            ripple.style.width = ripple.style.height = `${size}px`;
+            ripple.style.left = `${e.clientX - rect.left - size / 2}px`;
+            ripple.style.top = `${e.clientY - rect.top - size / 2}px`;
+            this.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        });
+
+        // Keyboard accessibility for ripple effect
+        profileImageContainer.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const rect = profileImageContainer.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const ripple = document.createElement('span');
+                ripple.classList.add('ripple');
+                ripple.style.width = ripple.style.height = `${size}px`;
+                ripple.style.left = `${rect.width / 2}px`;
+                ripple.style.top = `${rect.height / 2}px`;
+                profileImageContainer.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            }
+        });
+    }
 
     // Optimize profile image loading
     const profileImg = document.querySelector('.profile-image-container img');
     if (profileImg) {
-        profileImg.setAttribute('loading', 'lazy');
+        profileImg.setAttribute('loading', 'eager'); // Load profile image eagerly for hero section
+        profileImg.addEventListener('error', () => {
+            profileImg.src = 'profile_images/fallback.jpg'; // Fallback image
+        });
     }
 
-    // Remove loading animation for external links
-    document.querySelectorAll('a[target="_blank"]').forEach((link) => {
+    // External link loading indication
+    document.querySelectorAll('a[target="_blank"]').forEach(link => {
         link.addEventListener('click', function () {
             this.setAttribute('aria-busy', 'true');
             setTimeout(() => {
                 this.removeAttribute('aria-busy');
-            }, 200);
+            }, 500);
         });
     });
 });

@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Theme Toggle
   const themeToggle = document.createElement("button");
   themeToggle.className = "theme-toggle";
-  themeToggle.innerHTML = '<i class="fas fa-moon theme-icon"></i>';
+  themeToggle.innerHTML = '<i class="fas fa-sun theme-icon"></i>'; // Default to sun (dark mode)
   document.querySelector(".navbar-nav").appendChild(themeToggle);
 
   themeToggle.addEventListener("click", function () {
