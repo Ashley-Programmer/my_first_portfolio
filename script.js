@@ -143,7 +143,7 @@ function initTypingAnimation() {
   const typingText = document.querySelector(".typing-text .words-typing");
   if (!typingText) return;
 
-  const words = ["Software Development", "AI Development", "Fullstack Development"];
+  const words = ["Software Development", "AI Development", "Fullstack Development", "Web Development"];
   let wordIndex = 0;
   let charIndex = 0;
   let currentWord = "";
