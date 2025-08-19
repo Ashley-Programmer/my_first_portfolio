@@ -38,6 +38,13 @@ body {
   --light-bg: #f5f5f5;
   --light-text: #1a1a1a;
   --light-accent: #2563eb;
+  --green: #00ffaa;
+  --red: #ef4444;
+  --yellow: #f59e0b;
+  --purple: #8b5cf6;
+  --pink: #ec4899;
+  --orange: #f97316;
+  --cyan: #06b6d4;
 }
 
 body {
@@ -325,12 +332,12 @@ body {
 }
 
 .nav-link.active {
-  color: var(--accent-color);
+  background: var(--purple);
   font-weight: 700;
 }
 
 .nav-link.active i {
-  color: var(--accent-hover);
+  color: var(--green);
   transform: scale(1.1);
 }
 

@@ -191,7 +191,7 @@ function initParticles() {
       shape: { type: "circle" },
       opacity: { value: 0.5, random: true, anim: { enable: true, speed: 1, opacity_min: 0.1 } },
       size: { value: 3, random: true, anim: { enable: true, speed: 5, size_min: 0.1 } },
-      line_linked: { enable: true, distance: 150, color: "#3b82f6", opacity: 0.4, width: 1 },
+      line_linked: { enable: true, distance: 150, color: "#2563eb", opacity: 0.4, width: 1 },
       move: { enable: true, speed: 4, direction: "none", random: true, straight: false, out_mode: "out" }
     },
     interactivity: {
