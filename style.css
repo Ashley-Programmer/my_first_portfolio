@@ -1474,7 +1474,8 @@ p {
   }
 
   .nav-link:hover {
-    background: rgba(59, 130, 246, 0.2);
+    background: var(--purple);
+    color: var(--green);
     transform: scale(1.02);
   }
 
@@ -1638,6 +1639,7 @@ p {
 
   .py-5 {
     padding: clamp(1.5rem, 4vw, 2.5rem) 0;
+    text-align: center;
   }
 
   .about-section h2 {
@@ -1645,6 +1647,8 @@ p {
   }
   .about-section p {
     font-size: clamp(0.85rem, 2vw, 0.95rem);
+    max-width: 90%;
+    margin: 0 auto 1.25rem;
   }
 
   .contact-cta h2 {
@@ -1729,20 +1733,19 @@ p {
     padding: 0 calc(0.25rem + 0.125 * 1vw);
   }
 
-  .video-container {
-    border-radius: 0.5rem;
-  }
-
   .footer-enhanced {
     padding: clamp(30px, 10vw, 50px) 0 clamp(15px, 5vw, 20px);
+    text-align: center;
   }
 
   .footer-title {
     font-size: clamp(1.3rem, 5vw, 1.6rem);
+    text-align: center;
   }
 
   .footer-section-title {
     font-size: clamp(1rem, 4vw, 1.1rem);
+    text-align: center;
   }
 
   .footer-links a,
