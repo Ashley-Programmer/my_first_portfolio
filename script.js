@@ -70,37 +70,6 @@ function initSmoothScroll() {
 }
 
 /**
- * Initializes theme toggle with local storage and accessibility.
- */
-function initThemeToggle() {
-  const themeToggle = document.getElementById("theme-toggle");
-  const themeIcon = themeToggle.querySelector("i");
-  const currentTheme = localStorage.getItem("theme") || "dark";
-
-  if (currentTheme === "light") {
-    document.body.classList.add("light-theme");
-    themeIcon.classList.replace("fa-sun", "fa-moon");
-    themeToggle.setAttribute("aria-label", "Switch to dark theme");
-  }
-
-  themeToggle.addEventListener("click", () => {
-    document.body.style.transition = "background-color 0.3s ease, color 0.3s ease";
-    document.body.classList.toggle("light-theme");
-    const isLightTheme = document.body.classList.contains("light-theme");
-    themeIcon.classList.toggle("fa-sun", !isLightTheme);
-    themeIcon.classList.toggle("fa-moon", isLightTheme);
-    themeToggle.setAttribute(
-      "aria-label",
-      isLightTheme ? "Switch to dark theme" : "Switch to light theme"
-    );
-    localStorage.setItem("theme", isLightTheme ? "light" : "dark");
-    setTimeout(() => {
-      document.body.style.transition = "";
-    }, 300);
-  });
-}
-
-/**
  * Enhances mobile navigation accessibility.
  */
 function initMobileNav() {
@@ -122,7 +91,7 @@ function initMobileNav() {
   // Trap focus within menu
   navbarNav.addEventListener("keydown", (e) => {
     if (navbarToggler.getAttribute("aria-expanded") === "true") {
-      const focusableElements = navbarNav.querySelectorAll("a.nav-link, button.nav-link");
+      const focusableElements = navbarNav.querySelectorAll("a.nav-link");
       const firstElement = focusableElements[0];
       const lastElement = focusableElements[focusableElements.length - 1];
 
@@ -273,16 +242,32 @@ function initProfileImage() {
 }
 
 /**
+ * Initializes active navigation state based on current page.
+ */
+function initActiveNav() {
+  const currentPath = window.location.pathname.split("/").pop() || "index.html";
+  const navLinks = document.querySelectorAll(".nav-link, .footer-links a");
+  navLinks.forEach(link => {
+    const href = link.getAttribute("href");
+    if (href === currentPath) {
+      link.classList.add("active");
+    } else {
+      link.classList.remove("active");
+    }
+  });
+}
+
+/**
  * Main initialization function.
  */
 document.addEventListener("DOMContentLoaded", () => {
   initPageLoader();
   initScrollEffects();
   initSmoothScroll();
-  initThemeToggle();
   initMobileNav();
   initKeyboardNav();
   initTypingAnimation();
   initParticles();
   initProfileImage();
+  initActiveNav();
 });
