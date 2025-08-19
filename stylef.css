@@ -502,13 +502,42 @@ body.light-theme .navbar-collapse.show {
   background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
   padding: clamp(2.5rem, 8vh, 4rem) 0;
   min-height: calc(100vh - var(--nav-height));
+  animation: gradientMove 10s ease infinite;
   display: flex;
   align-items: center;
   position: relative;
   overflow: hidden;
 }
 
-.hero-section::before {
+@keyframes gradientMove {
+  0% {
+      background-position: 0% 50%;
+  }
+  50% {
+      background-position: 100% 50%;
+  }
+  100% {
+      background-position: 0% 50%;
+  }
+}
+
+.hero-parallax {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  background: url('images/images.jfif') center/cover no-repeat;
+  opacity: 0.1;
+  transition: opacity 0.3s;
+}
+.hero:hover .hero-parallax {
+  opacity: 0.2;
+}
+
+/* .hero-section::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -519,27 +548,36 @@ body.light-theme .navbar-collapse.show {
   );
   opacity: 0.6;
   z-index: 0;
-}
+} */
 
-.hero-section::after {
+/* .hero-section::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><circle cx="100" cy="100" r="2" fill="rgba(59,130,246,0.3)"/><circle cx="800" cy="200" r="3" fill="rgba(59,130,246,0.2)"/><circle cx="300" cy="700" r="2" fill="rgba(59,130,246,0.25)"/><circle cx="600" cy="400" r="3" fill="rgba(59,130,246,0.15)"/></svg>');
   background-size: 200%;
   animation: particleMove 20s linear infinite;
   opacity: 0.2;
   z-index: 0;
+} */
+
+.hero-section .particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
 }
 
-@keyframes particleMove {
+/* @keyframes particleMove {
   0% {
     background-position: 0 0;
   }
   100% {
     background-position: 200% 200%;
   }
-}
+} */
 
 .hero-section > .container {
   position: relative;
