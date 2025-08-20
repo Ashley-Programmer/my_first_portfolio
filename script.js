@@ -70,57 +70,125 @@ function initSmoothScroll() {
 }
 
 /**
- * Enhances mobile navigation accessibility.
+ * Enhanced mobile navigation with improved accessibility, smooth transitions, and robust event handling.
  */
 function initMobileNav() {
-  const navbarToggler = document.querySelector(".navbar-toggler");
-  const navbarNav = document.querySelector("#navbarNav");
+  const navbarToggler = document.querySelector('.navbar-toggler');
+  const navbarNav = document.querySelector('#navbarNav');
+  const body = document.body;
 
-  navbarToggler.addEventListener("click", () => {
-    const isExpanded = navbarToggler.getAttribute("aria-expanded") === "true";
+  if (!navbarToggler || !navbarNav) return;
+
+  /**
+   * Toggle navigation menu with smooth transitions
+   */
+  function toggleNav() {
+    const isExpanded = navbarToggler.getAttribute('aria-expanded') === 'true';
+    navbarToggler.setAttribute('aria-expanded', !isExpanded);
     navbarToggler.setAttribute(
-      "aria-label",
-      isExpanded ? "Open navigation menu" : "Close navigation menu"
+      'aria-label',
+      isExpanded ? 'Open navigation menu' : 'Close navigation menu'
     );
-    if (isExpanded) {
-      const firstNavLink = document.querySelector("#navbarNav .nav-link");
-      if (firstNavLink) firstNavLink.focus();
-    }
-  });
 
-  // Trap focus within menu
-  navbarNav.addEventListener("keydown", (e) => {
-    if (navbarToggler.getAttribute("aria-expanded") === "true") {
-      const focusableElements = navbarNav.querySelectorAll("a.nav-link");
-      const firstElement = focusableElements[0];
-      const lastElement = focusableElements[focusableElements.length - 1];
-
-      if (e.key === "Tab") {
-        if (e.shiftKey && document.activeElement === firstElement) {
-          e.preventDefault();
-          lastElement.focus();
-        } else if (!e.shiftKey && document.activeElement === lastElement) {
-          e.preventDefault();
-          firstElement.focus();
+    if (!isExpanded) {
+      navbarNav.classList.add('show');
+      navbarNav.style.height = '0';
+      // Force reflow for animation
+      navbarNav.offsetHeight;
+      navbarNav.style.height = `${navbarNav.scrollHeight}px`;
+      body.classList.add('nav-open');
+      
+      // Focus on first nav link after animation
+      setTimeout(() => {
+        const firstNavLink = navbarNav.querySelector('.nav-link');
+        if (firstNavLink) firstNavLink.focus();
+      }, 300);
+    } else {
+      navbarNav.style.height = '0';
+      body.classList.remove('nav-open');
+      // Remove 'show' class after transition
+      navbarNav.addEventListener('transitionend', () => {
+        if (navbarToggler.getAttribute('aria-expanded') === 'false') {
+          navbarNav.classList.remove('show');
+          navbarNav.style.height = '';
         }
-      } else if (e.key === "Escape") {
-        navbarToggler.click();
-        navbarToggler.focus();
-      }
+      }, { once: true });
     }
-  });
+  }
 
-  // Close menu when clicking outside
-  document.addEventListener("click", (e) => {
+  /**
+   * Handle keyboard navigation for accessibility
+   */
+  function handleKeyNav(e) {
+    if (navbarToggler.getAttribute('aria-expanded') !== 'true') return;
+
+    const focusableElements = navbarNav.querySelectorAll(
+      'a.nav-link:not([disabled]), button:not([disabled])'
+    );
+    if (!focusableElements.length) return;
+
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    if (e.key === 'Tab') {
+      if (e.shiftKey && document.activeElement === firstElement) {
+        e.preventDefault();
+        lastElement.focus();
+      } else if (!e.shiftKey && document.activeElement === lastElement) {
+        e.preventDefault();
+        firstElement.focus();
+      }
+    } else if (e.key === 'Escape') {
+      toggleNav();
+      navbarToggler.focus();
+    }
+  }
+
+  /**
+   * Close menu when clicking outside
+   */
+  function handleOutsideClick(e) {
     if (
-      navbarToggler.getAttribute("aria-expanded") === "true" &&
+      navbarToggler.getAttribute('aria-expanded') === 'true' &&
       !navbarNav.contains(e.target) &&
       !navbarToggler.contains(e.target)
     ) {
-      navbarToggler.click();
+      toggleNav();
     }
-  });
+  }
+
+  /**
+   * Close menu when resizing to desktop view
+   */
+  function handleResize() {
+    if (window.innerWidth >= 992 && navbarToggler.getAttribute('aria-expanded') === 'true') {
+      toggleNav();
+    }
+  }
+
+  // Initialize event listeners
+  navbarToggler.addEventListener('click', toggleNav);
+  navbarNav.addEventListener('keydown', handleKeyNav);
+  document.addEventListener('click', handleOutsideClick);
+  window.addEventListener('resize', handleResize);
+
+  // Cleanup function to remove event listeners
+  function cleanup() {
+    navbarToggler.removeEventListener('click', toggleNav);
+    navbarNav.removeEventListener('keydown', handleKeyNav);
+    document.removeEventListener('click', handleOutsideClick);
+    window.removeEventListener('resize', handleResize);
+  }
+
+  // Return cleanup function for potential future use
+  return cleanup;
 }
+// Initialize on DOM content loaded
+document.addEventListener('DOMContentLoaded', () => {
+  const cleanup = initMobileNav();
+  // Optional: Store cleanup function in a global scope if needed
+  window.navbarCleanup = cleanup;
+});
 
 /**
  * Adds keyboard navigation support for interactive elements.
@@ -179,28 +247,37 @@ function initTypingAnimation() {
 }
 
 /**
- * Initializes particles.js for hero section background.
+ * Initializes particles.js for hero section background with color cycling.
  */
 function initParticles() {
-  if (!document.getElementById("particles-js")) return;
+  const particleColors = ['#00ff11', '#ef4444', '#06b6d4', '#8b5cf6'];
+  let colorIndex = 0;
 
-  particlesJS("particles-js", {
-    particles: {
-      number: { value: 60, density: { enable: true, value_area: 800 } },
-      color: { value: "#00ff11" },
-      shape: { type: "circle" },
-      opacity: { value: 0.5, random: true, anim: { enable: true, speed: 1, opacity_min: 0.1 } },
-      size: { value: 3, random: true, anim: { enable: true, speed: 5, size_min: 0.1 } },
-      line_linked: { enable: true, distance: 150, color: "#00ff11", opacity: 0.4, width: 1 },
-      move: { enable: true, speed: 4, direction: "none", random: true, straight: false, out_mode: "out" }
-    },
-    interactivity: {
-      detect_on: "canvas",
-      events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" }, resize: true },
-      modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 4 } }
-    },
-    retina_detect: true
-  });
+  function updateParticleColor() {
+    particlesJS("particles-js", {
+      particles: {
+        number: { value: 80, density: { enable: true, value_area: 800 } },
+        color: { value: particleColors[colorIndex] },
+        shape: { type: "circle", stroke: { width: 0, color: "#000" }, polygon: { nb_sides: 5 } },
+        opacity: { value: 0.5, random: true, anim: { enable: true, speed: 5, opacity_min: 0.1 } },
+        size: { value: 3, random: true, anim: { enable: true, speed: 2, size_min: 0.1 } },
+        line_linked: { enable: true, distance: 200, color: particleColors[colorIndex], opacity: 0.4, width: 1 },
+        move: { enable: true, speed: 2, direction: "none", random: true, straight: false, out_mode: "out", bounce: false }
+      },
+      interactivity: {
+        detect_on: "canvas",
+        events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" }, resize: true },
+        modes: { repulse: { distance: 90, duration: 0.4 }, push: { particles_nb: 4 } }
+      },
+      retina_detect: true
+    });
+    colorIndex = (colorIndex + 1) % particleColors.length;
+  }
+
+  if (document.getElementById("particles-js")) {
+    updateParticleColor();
+    setInterval(updateParticleColor, 5000);
+  }
 }
 
 /**
