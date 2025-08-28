@@ -336,6 +336,7 @@ body {
 .nav-link.active {
   color: var(--accent-color);
   font-weight: 700;
+  background: var(--accent-color);
 }
 
 .nav-link.active i {
@@ -358,15 +359,18 @@ body {
   background: linear-gradient(90deg, var(--accent-color), var(--green));
   border-radius: 2px;
   transition: width 0.3s ease, transform 0.3s ease;
-  transform: translateX(-50%);
+  transform: translateX(-50%) scaleX(0);
+  transform-origin: center;
 }
 
 .nav-link.active::after {
   width: 70%;
+  transform: translateX(-50%) scaleX(1);
 }
 
 .nav-link:hover::after {
   width: 70%;
+  transform: translateX(-50%) scaleX(1);
 }
 
 .nav-link:focus {
