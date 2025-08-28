@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
       document.body.classList.add("page-loaded");
     });
   }
-
+  
   // Navbar Scroll Effect
   function initNavbarScroll() {
     const navbar = document.querySelector(".navbar");
